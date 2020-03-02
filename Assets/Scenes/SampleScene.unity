@@ -658,9 +658,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnAnchor: {fileID: 266619715}
   separation: 1.1
-  instanceCount: 10
-  prefabReference: {fileID: 8970373203788622390, guid: 89e2f9810ce685a46880be5790ecd60a,
-    type: 3}
+  instanceCount: 50000
+  prefabReference:
+    m_AssetGUID: 89e2f9810ce685a46880be5790ecd60a
+    m_SubObjectName: 
 --- !u!114 &1800187783
 MonoBehaviour:
   m_ObjectHideFlags: 0
