@@ -658,7 +658,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnAnchor: {fileID: 266619715}
   separation: 1.1
-  instanceCount: 50000
+  instanceCount: 500
   prefabReference:
     m_AssetGUID: 89e2f9810ce685a46880be5790ecd60a
     m_SubObjectName: 

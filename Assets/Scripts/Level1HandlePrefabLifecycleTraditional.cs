@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Assets.Scripts
 {
@@ -12,12 +12,11 @@ namespace Assets.Scripts
         [SerializeField] private int instanceCount = 10;
         [SerializeField] private AssetReference prefabReference = null;
 
-        private AsyncOperationHandle<GameObject> _asyncOperationHandle;
         private readonly List<GameObject> _instances = new List<GameObject>();
 
         public void HandleLifecycle()
         {
-            var hasSpawnedInstances = _asyncOperationHandle.IsValid();
+            var hasSpawnedInstances = _instances.Any();
             if (hasSpawnedInstances)
             {
                 Despawn();
@@ -30,21 +29,12 @@ namespace Assets.Scripts
 
         private void Spawn()
         {
-            _asyncOperationHandle = prefabReference.LoadAssetAsync<GameObject>();
-            _asyncOperationHandle.Completed += handle =>
-            {
-                var prefab = handle.Result;
-                SpawnPrefabs(prefab);
-            };
-        }
-
-        private void SpawnPrefabs(GameObject prefab)
-        {
             for (var i = 0; i < instanceCount; i++)
             {
-                var newGameObject = Instantiate(prefab, spawnAnchor.position + i * separation * Vector3.right,
-                    spawnAnchor.rotation);
-                _instances.Add(newGameObject);
+                var pos = spawnAnchor.position + i * separation * Vector3.right;
+                var rotation = spawnAnchor.rotation;
+                var asyncOperationHandle = prefabReference.InstantiateAsync(pos, rotation);
+                asyncOperationHandle.Completed += handle => _instances.Add(handle.Result);
             }
         }
 
@@ -52,10 +42,9 @@ namespace Assets.Scripts
         {
             foreach (var instance in _instances)
             {
-                Destroy(instance);
+                Addressables.ReleaseInstance(instance);
             }
             _instances.Clear();
-            Addressables.Release(_asyncOperationHandle);
         }
     }
 }
